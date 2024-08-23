@@ -27,7 +27,7 @@ namespace Service
                 {
                     ContactModel tempmodel = new ContactModel()
                     {
-                        firstName=model.firstName,
+                        FirstName=model.firstName,
                         LastName=model.LastName,
                     };
                     _repository.Add(tempmodel);

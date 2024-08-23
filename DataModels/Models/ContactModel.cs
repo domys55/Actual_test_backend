@@ -8,8 +8,12 @@ namespace DataModels.Models
 {
     public class ContactModel
     {
-        public int id { get; set; }
-        public string firstName { get; set; }
+        public int Id { get; set; }
+        public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        //fks
+        public ICollection<PhoneModel> PhoneNumbers { get; }
+        public ICollection<AddressModel> Addresses { get; }
     }
 }
