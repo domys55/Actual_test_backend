@@ -12,6 +12,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+string CORSOpenPolicy = "OpenCORSPolicy";
+
+builder.Services.AddCors(options => {
+    options.AddPolicy(
+  name: CORSOpenPolicy,
+  builder => {
+      builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+  });
+});
+
+
 DependencyInjectHelper.AddCustomServices(builder.Services);
 
 builder.Services.AddControllers();
@@ -29,7 +40,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(CORSOpenPolicy);
 app.UseAuthorization();
 
 app.MapControllers();

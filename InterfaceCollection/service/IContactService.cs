@@ -14,7 +14,7 @@ namespace InterfaceCollection.service
         APIResponse<ContactDTO> GetById(int id);
         APIResponse<IEnumerable<ContactDTO>> GetAll();
         APIResponse<ContactDTO> Add(ContactDTO model);
-        APIResponse<ContactDTO> Edit(ContactModel model);
-        APIResponse<ContactDTO> Delete(ContactModel model);
+        APIResponse<ContactDTO> Edit(ContactDTO model);
+        APIResponse<ContactDTO> Delete(int id);
     }
 }

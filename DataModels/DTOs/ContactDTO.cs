@@ -8,8 +8,8 @@ namespace DataModels.DTOs
 {
     public class ContactDTO
     {
-        public int id { get; set; }
-        public string firstName { get; set; }
+        public int Id { get; set; }
+        public string FirstName { get; set; }
         public string LastName { get; set; }
     }
 }

@@ -26,22 +26,37 @@ namespace Repository
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            var data = _context.Contacts.Where(a => a.Id == id).FirstOrDefault();
+            if (data != null)
+            {
+                _context.Contacts.Remove(data);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public IEnumerable<ContactModel> GetAll()
         {
-            throw new NotImplementedException();
+            var data = _context.Contacts;
+            return data;
         }
 
         public ContactModel GetById(int id)
         {
-            throw new NotImplementedException();
+            var data = _context.Contacts.Where(a=>a.Id==id).FirstOrDefault();
+            return data;
         }
 
         public bool Update(ContactModel contact)
         {
-            throw new NotImplementedException();
+            if(contact != null)
+            {
+                _context.Update(contact);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
     }
 }

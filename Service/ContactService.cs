@@ -3,9 +3,11 @@ using DataModels.Models;
 using InterfaceCollection.repository;
 using InterfaceCollection.service;
 using Model_lib;
+using Service.util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,11 +27,7 @@ namespace Service
             {
                 if (model != null)
                 {
-                    ContactModel tempmodel = new ContactModel()
-                    {
-                        FirstName=model.firstName,
-                        LastName=model.LastName,
-                    };
+                    ContactModel tempmodel = model.ToModel();
                     _repository.Add(tempmodel);
                     return APIResponse<ContactDTO>.Ok(model);
                 }
@@ -44,24 +42,52 @@ namespace Service
             }
         }
 
-        public APIResponse<ContactDTO> Delete(ContactModel model)
+        public APIResponse<ContactDTO> Delete(int id)
         {
-            throw new NotImplementedException();
+            bool response=false;
+            if(id != 0)
+            {
+                response = _repository.Delete(id);
+            }
+
+            if (response==false)
+            {
+                return APIResponse<ContactDTO>.NotFound();
+            }
+            return APIResponse<ContactDTO>.OkNoData();
         }
 
-        public APIResponse<ContactDTO> Edit(ContactModel model)
+        public APIResponse<ContactDTO> Edit(ContactDTO model)
         {
-            throw new NotImplementedException();
+            bool response = false;
+            if (model != null)
+            {
+                response = _repository.Update(model.ToModel());
+            }
+
+            if (response == false)
+            {
+                return APIResponse<ContactDTO>.NotFound();
+            }
+            return APIResponse<ContactDTO>.Ok(model);
         }
 
         public APIResponse<IEnumerable<ContactDTO>> GetAll()
         {
-            throw new NotImplementedException();
+            List<ContactDTO> list = new List<ContactDTO>();
+            foreach (var a in _repository.GetAll())
+            {
+                ContactDTO tempModel = a.ToDTO();
+                list.Add(tempModel);
+            }
+
+            return APIResponse<IEnumerable<ContactDTO>>.Ok(list);
         }
 
         public APIResponse<ContactDTO> GetById(int id)
         {
-            throw new NotImplementedException();
+            ContactDTO tempModel = _repository.GetById(id).ToDTO();
+            return APIResponse<ContactDTO>.Ok(tempModel);
         }
     }
 }
