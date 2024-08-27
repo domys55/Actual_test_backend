@@ -31,5 +31,22 @@ namespace Service.util
                 LastName = dto.LastName
             };
         }
+
+        public static ContactTableDTO ToDTOTable(this ContactModel model)
+        {
+            if (model == null)
+                return null;
+            var primaryPhone = model.PhoneNumbers?.FirstOrDefault(a => a.Primary == true);
+            var primaryAddress = model.Addresses?.FirstOrDefault(a => a.Primary == true);
+
+            return new ContactTableDTO
+            {
+                Id = model.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Number = primaryPhone?.Number ?? "",
+                Street = primaryAddress?.Street ?? ""
+            };
+        }
     }
 }

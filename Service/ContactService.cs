@@ -97,6 +97,27 @@ namespace Service
             return APIResponse<IEnumerable<ContactDTO>>.OkRecordCount(list,cnt);
         }
 
+        public APIResponse<IEnumerable<ContactTableDTO>> GetAllPagedTable(PagingDTO dto)
+        {
+            int cnt;
+            List<ContactTableDTO> list = new List<ContactTableDTO>();
+            foreach (var a in _repository.GetAllPagedTable(dto.Page, dto.RecordNo,dto.search))
+            {
+                ContactTableDTO tempModel = a.ToDTOTable();
+                list.Add(tempModel);
+            }
+            if (String.IsNullOrEmpty(dto.search))
+            {
+                cnt = _repository.GetRecordCount();
+            }
+            else
+            {
+                cnt = _repository.GetRecordCountSearch(dto.search, dto.Page, dto.RecordNo);
+            }
+            
+            return APIResponse<IEnumerable<ContactTableDTO>>.OkRecordCount(list, cnt);
+        }
+
         public APIResponse<ContactDTO> GetById(int id)
         {
             ContactDTO tempModel = _repository.GetById(id).ToDTO();

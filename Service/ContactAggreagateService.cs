@@ -32,7 +32,7 @@ namespace Service
                 {
                     if (_PhoneRepository.CheckByNumber(a.Number))
                     {
-                        return APIResponse<ContactAggregateDTO>.ServerError();
+                        return APIResponse<ContactAggregateDTO>.PhoneExists();
                     }
                 }
                 ContactDTO temp = new ContactDTO
@@ -79,7 +79,7 @@ namespace Service
                 {
                     if (_PhoneRepository.CheckByNumberAndId(a.Number,a.Id))
                     {
-                        return APIResponse<ContactAggregateDTO>.ServerError();
+                        return APIResponse<ContactAggregateDTO>.PhoneExists();
                     }
                 }
                 ContactDTO temp = new ContactDTO

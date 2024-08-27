@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Azure;
 
 namespace Repository
 {
@@ -44,7 +46,25 @@ namespace Repository
 
         public IEnumerable<ContactModel> GetAllPaged(int page,int pageCount)
         {
-            var data=_context.Contacts.Skip((page-1)*pageCount).Take(pageCount).ToList();
+            var data=_context.Contacts.Skip((page-1)*pageCount).Take(pageCount);
+            return data;
+        }
+
+        public IEnumerable<ContactModel> GetAllPagedTable(int page, int pageCount, string search)
+        {
+            if (!String.IsNullOrEmpty(search))
+            {
+               string searchTerm = search.ToLower();
+
+                return _context.Contacts.Include(a => a.Addresses).Include(a => a.PhoneNumbers).Where(contact =>
+                    contact.Id.ToString().Contains(searchTerm) ||
+                    (!string.IsNullOrEmpty(contact.FirstName) && contact.FirstName.ToLower().Contains(searchTerm)) ||
+                    (!string.IsNullOrEmpty(contact.LastName) && contact.LastName.ToLower().Contains(searchTerm)) ||
+                    (!string.IsNullOrEmpty(contact.PhoneNumbers.Where(a=>a.Primary).First().Number) && contact.PhoneNumbers.Where(a => a.Primary).First().Number.ToLower().Contains(searchTerm)) ||
+                    (!string.IsNullOrEmpty(contact.Addresses.Where(a => a.Primary).First().Street) && contact.Addresses.Where(a => a.Primary).First().Street.ToLower().Contains(searchTerm))
+                ).Skip((page - 1) * pageCount).Take(pageCount).ToList();
+            }
+            var data = _context.Contacts.Include(a=>a.Addresses).Include(a=>a.PhoneNumbers).Skip((page - 1) * pageCount).Take(pageCount);
             return data;
         }
 
@@ -58,6 +78,17 @@ namespace Repository
         {
             int count=_context.Contacts.Count();
             return count;
+        }
+
+        public int GetRecordCountSearch(string searchTerm, int page, int pageCount)
+        {
+            return _context.Contacts.Include(a => a.Addresses).Include(a => a.PhoneNumbers).Where(contact =>
+                     contact.Id.ToString().Contains(searchTerm) ||
+                     (!string.IsNullOrEmpty(contact.FirstName) && contact.FirstName.ToLower().Contains(searchTerm)) ||
+                     (!string.IsNullOrEmpty(contact.LastName) && contact.LastName.ToLower().Contains(searchTerm)) ||
+                     (!string.IsNullOrEmpty(contact.PhoneNumbers.Where(a => a.Primary).First().Number) && contact.PhoneNumbers.Where(a => a.Primary).First().Number.ToLower().Contains(searchTerm)) ||
+                     (!string.IsNullOrEmpty(contact.Addresses.Where(a => a.Primary).First().Street) && contact.Addresses.Where(a => a.Primary).First().Street.ToLower().Contains(searchTerm))
+                 ).Skip((page - 1) * pageCount).Take(pageCount).Count();
         }
 
         public bool Update(ContactModel contact)
