@@ -6,6 +6,7 @@
         public bool Success { get; set; }
         public string? ErrorMessage { get; set; }
         public int StatusCode { get; set; }
+        public int RecordCount { get; set; }
 
         public static APIResponse<T> Ok(T data)
         {
@@ -13,6 +14,17 @@
             {
                 Data = data,
                 Success = true,
+                StatusCode = 200
+            };
+        }
+
+        public static APIResponse<T> OkRecordCount(T data,int cnt)
+        {
+            return new APIResponse<T>
+            {
+                Data = data,
+                Success = true,
+                RecordCount=cnt,
                 StatusCode = 200
             };
         }
@@ -31,7 +43,8 @@
             return new APIResponse<T>
             {
                 Success = false,
-                StatusCode = 404
+                StatusCode = 404,
+                ErrorMessage = "Record not found!"
             };
         }
 

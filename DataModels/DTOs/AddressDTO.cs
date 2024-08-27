@@ -1,12 +1,13 @@
-﻿using System;
+﻿using DataModels.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataModels.Models
+namespace DataModels.DTOs
 {
-    public class AddressModel
+    public class AddressDTO
     {
         public int Id { get; set; }
         public string Street { get; set; }
@@ -16,6 +17,5 @@ namespace DataModels.Models
 
         //fk
         public int ContactId { get; set; }
-        public ContactModel Contact { get; set; }
     }
 }
