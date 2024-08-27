@@ -59,73 +59,90 @@ namespace Service
 
         public APIResponse<ContactAggregateDTO> Delete(int id)
         {
-            if (id != 0)
+            try
             {
-                _PhoneRepository.DeleteByContactID(id);
-                _AddressRepository.DeleteByContactID(id);
-                _ContactRepository.Delete(id);
-               
-                return APIResponse<ContactAggregateDTO>.OkNoData();
+                if (id != 0)
+                {
+                    _PhoneRepository.DeleteByContactID(id);
+                    _AddressRepository.DeleteByContactID(id);
+                    _ContactRepository.Delete(id);
+
+                    return APIResponse<ContactAggregateDTO>.OkNoData();
+                }
+                return APIResponse<ContactAggregateDTO>.NotFound();
             }
-            return APIResponse<ContactAggregateDTO>.ServerError();
+            catch (Exception ex)
+            {
+                return APIResponse<ContactAggregateDTO>.ServerError();
+            }
         }
 
         public APIResponse<ContactAggregateDTO> Edit(ContactAggregateDTO model)
         {
-            
-            if (model != null)
+            try
             {
-                foreach (var a in model.PhoneNumbers)
+                if (model != null)
                 {
-                    if (_PhoneRepository.CheckByNumberAndId(a.Number,a.Id))
+                    foreach (var a in model.PhoneNumbers)
                     {
-                        return APIResponse<ContactAggregateDTO>.PhoneExists();
+                        if (_PhoneRepository.CheckByNumberAndId(a.Number, a.Id))
+                        {
+                            return APIResponse<ContactAggregateDTO>.PhoneExists();
+                        }
                     }
+                    ContactDTO temp = new ContactDTO
+                    {
+                        Id = model.Id,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                    };
+                    var savedcontact = _ContactRepository.Update(temp.ToModel());
+                    //model.Id = savedcontact.Id;
+                    foreach (var a in model.PhoneNumbers)
+                    {
+                        //a.ContactId = savedcontact.Id;
+                        if (a.Id == 0)
+                        {
+                            a.ContactId = model.Id;
+                            _PhoneRepository.Add(a.ToModel());
+                        }
+                        else
+                        {
+                            _PhoneRepository.Update(a.ToModel());
+                        }
+
+                    }
+                    foreach (var a in model.Addresses)//check if exists
+                    {
+                        if (a.Id == 0)
+                        {
+                            a.ContactId = model.Id;
+                            _AddressRepository.Add(a.ToModel());
+                        }
+                        else
+                        {
+                            _AddressRepository.Update(a.ToModel());
+                        }
+
+                    }
+                    return APIResponse<ContactAggregateDTO>.Ok(model);
                 }
-                ContactDTO temp = new ContactDTO
-                {
-                    Id=model.Id,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                };
-                var savedcontact = _ContactRepository.Update(temp.ToModel());
-                //model.Id = savedcontact.Id;
-                foreach (var a in model.PhoneNumbers)
-                {
-                    //a.ContactId = savedcontact.Id;
-                    if (a.Id==0)
-                    {
-                        a.ContactId = model.Id;
-                        _PhoneRepository.Add(a.ToModel());
-                    }
-                    else
-                    {
-                        _PhoneRepository.Update(a.ToModel());
-                    }
-                    
-                }
-                foreach (var a in model.Addresses)//check if exists
-                {
-                    if (a.Id==0)
-                    {
-                        a.ContactId=model.Id;
-                        _AddressRepository.Add(a.ToModel());
-                    }
-                    else
-                    {
-                        _AddressRepository.Update(a.ToModel());
-                    }
-                    
-                }
-                return APIResponse<ContactAggregateDTO>.Ok(model);
+                return APIResponse<ContactAggregateDTO>.NotFound();
             }
-            return APIResponse<ContactAggregateDTO>.ServerError();
+            catch (Exception ex)
+            {
+                return APIResponse<ContactAggregateDTO>.ServerError();
+            }
         }
 
         public APIResponse<ContactAggregateDTO> GetById(int id)
         {
             try
             {
+                if (id==0)
+                {
+                    return APIResponse<ContactAggregateDTO>.NotFound();
+                }
                 ContactDTO contact = _ContactRepository.GetById(id).ToDTO();
                 if (contact==null)
                 {
