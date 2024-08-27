@@ -10,6 +10,7 @@ namespace DataModels.Models
     {
         public int Id { get; set; }
         public string Number { get; set; }
+        public bool Primary { get; set; }
 
         //fk
         public int ContactId { get; set; }

@@ -15,5 +15,7 @@ namespace Repository
         }
 
         public DbSet<ContactModel> Contacts { get; set; }
+        public DbSet<PhoneModel> PhoneNums { get; set; }
+        public DbSet<AddressModel> Addresses { get; set; }
     }
 }

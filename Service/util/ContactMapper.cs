@@ -12,6 +12,8 @@ namespace Service.util
     {
         public static ContactDTO ToDTO(this ContactModel model)
         {
+            if (model == null) 
+                return null;
             return new ContactDTO
             {
                 Id = model.Id,

@@ -42,10 +42,22 @@ namespace Repository
             return data;
         }
 
+        public IEnumerable<ContactModel> GetAllPaged(int page,int pageCount)
+        {
+            var data=_context.Contacts.Skip((page-1)*pageCount).Take(pageCount).ToList();
+            return data;
+        }
+
         public ContactModel GetById(int id)
         {
             var data = _context.Contacts.Where(a=>a.Id==id).FirstOrDefault();
             return data;
+        }
+
+        public int GetRecordCount()
+        {
+            int count=_context.Contacts.Count();
+            return count;
         }
 
         public bool Update(ContactModel contact)

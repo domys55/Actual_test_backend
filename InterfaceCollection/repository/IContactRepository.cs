@@ -14,9 +14,12 @@ namespace InterfaceCollection.repository
 
         // Read - Get a single contact by ID
         ContactModel GetById(int id);
+        int GetRecordCount();
 
         // Read - Get all contacts
         IEnumerable<ContactModel> GetAll();
+
+        IEnumerable<ContactModel> GetAllPaged(int page,int pageCount);
 
         // Update
         bool Update(ContactModel contact);

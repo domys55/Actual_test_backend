@@ -25,6 +25,14 @@ namespace Actual_test_backend.Controllers
             return Ok(items);
         }
 
+        [Route("getpage")]
+        [HttpPost]
+        public ActionResult<APIResponse<IEnumerable<ContactDTO>>> GetAllContactsPaged(PagingDTO dto)
+        {
+            var items = _contactService.GetAllPaged(dto);
+            return Ok(items);
+        }
+
         [HttpGet("{id:int}")]
         public ActionResult<APIResponse<ContactDTO>> GetContactById(int id)
         {

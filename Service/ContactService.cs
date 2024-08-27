@@ -28,8 +28,8 @@ namespace Service
                 if (model != null)
                 {
                     ContactModel tempmodel = model.ToModel();
-                    _repository.Add(tempmodel);
-                    return APIResponse<ContactDTO>.Ok(model);
+                    var saved=_repository.Add(tempmodel);
+                    return APIResponse<ContactDTO>.Ok(saved.ToDTO());
                 }
                 else
                 {
@@ -82,6 +82,19 @@ namespace Service
             }
 
             return APIResponse<IEnumerable<ContactDTO>>.Ok(list);
+        }
+
+        public APIResponse<IEnumerable<ContactDTO>> GetAllPaged(PagingDTO dto)//paged
+        {
+            
+            List<ContactDTO> list = new List<ContactDTO>();
+            foreach (var a in _repository.GetAllPaged(dto.Page,dto.RecordNo))
+            {
+                ContactDTO tempModel = a.ToDTO();
+                list.Add(tempModel);
+            }
+            int cnt = _repository.GetRecordCount();
+            return APIResponse<IEnumerable<ContactDTO>>.OkRecordCount(list,cnt);
         }
 
         public APIResponse<ContactDTO> GetById(int id)

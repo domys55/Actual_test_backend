@@ -13,6 +13,7 @@ namespace InterfaceCollection.service
     {
         APIResponse<ContactDTO> GetById(int id);
         APIResponse<IEnumerable<ContactDTO>> GetAll();
+        APIResponse<IEnumerable<ContactDTO>> GetAllPaged(PagingDTO dto);
         APIResponse<ContactDTO> Add(ContactDTO model);
         APIResponse<ContactDTO> Edit(ContactDTO model);
         APIResponse<ContactDTO> Delete(int id);
