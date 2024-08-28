@@ -44,6 +44,7 @@ namespace Service
 
         public APIResponse<ContactDTO> Delete(int id)
         {
+            try { 
             bool response=false;
             if(id != 0)
             {
@@ -55,21 +56,32 @@ namespace Service
                 return APIResponse<ContactDTO>.NotFound();
             }
             return APIResponse<ContactDTO>.OkNoData();
+            }catch(Exception ex)
+            {
+                return APIResponse<ContactDTO>.ServerError();
+            }
         }
 
         public APIResponse<ContactDTO> Edit(ContactDTO model)
         {
-            bool response = false;
-            if (model != null)
+            try
             {
-                response = _repository.Update(model.ToModel());
-            }
+                bool response = false;
+                if (model != null)
+                {
+                    response = _repository.Update(model.ToModel());
+                }
 
-            if (response == false)
-            {
-                return APIResponse<ContactDTO>.NotFound();
+                if (response == false)
+                {
+                    return APIResponse<ContactDTO>.NotFound();
+                }
+                return APIResponse<ContactDTO>.Ok(model);
             }
-            return APIResponse<ContactDTO>.Ok(model);
+            catch (Exception ex)
+            {
+                return APIResponse<ContactDTO>.ServerError();
+            }
         }
 
         public APIResponse<IEnumerable<ContactDTO>> GetAll()
@@ -86,15 +98,50 @@ namespace Service
 
         public APIResponse<IEnumerable<ContactDTO>> GetAllPaged(PagingDTO dto)//paged
         {
-            
-            List<ContactDTO> list = new List<ContactDTO>();
-            foreach (var a in _repository.GetAllPaged(dto.Page,dto.RecordNo))
+            try
             {
-                ContactDTO tempModel = a.ToDTO();
-                list.Add(tempModel);
+
+                List<ContactDTO> list = new List<ContactDTO>();
+                foreach (var a in _repository.GetAllPaged(dto.Page, dto.RecordNo))
+                {
+                    ContactDTO tempModel = a.ToDTO();
+                    list.Add(tempModel);
+                }
+                int cnt = _repository.GetRecordCount();
+                return APIResponse<IEnumerable<ContactDTO>>.OkRecordCount(list, cnt);
             }
-            int cnt = _repository.GetRecordCount();
-            return APIResponse<IEnumerable<ContactDTO>>.OkRecordCount(list,cnt);
+            catch (Exception ex)
+            {
+                return APIResponse<IEnumerable<ContactDTO>>.ServerError();
+            }
+        }
+
+        public APIResponse<IEnumerable<ContactTableDTO>> GetAllPagedTable(PagingDTO dto)
+        {
+            try
+            {
+                int cnt;
+                List<ContactTableDTO> list = new List<ContactTableDTO>();
+                foreach (var a in _repository.GetAllPagedTable(dto.Page, dto.RecordNo, dto.search))
+                {
+                    ContactTableDTO tempModel = a.ToDTOTable();
+                    list.Add(tempModel);
+                }
+                if (String.IsNullOrEmpty(dto.search))
+                {
+                    cnt = _repository.GetRecordCount();
+                }
+                else
+                {
+                    cnt = _repository.GetRecordCountSearch(dto.search, dto.Page, dto.RecordNo);
+                }
+
+                return APIResponse<IEnumerable<ContactTableDTO>>.OkRecordCount(list, cnt);
+            }
+            catch (Exception ex)
+            {
+                return APIResponse<IEnumerable<ContactTableDTO>>.ServerError();
+            }
         }
 
         public APIResponse<ContactDTO> GetById(int id)

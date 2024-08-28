@@ -48,6 +48,16 @@
             };
         }
 
+        public static APIResponse<T> PhoneExists()
+        {
+            return new APIResponse<T>
+            {
+                Success = false,
+                StatusCode = 405,
+                ErrorMessage = "Phone number inserted before and is in use."
+            };
+        }
+
         public static APIResponse<T> ServerError()
         {
             return new APIResponse<T>

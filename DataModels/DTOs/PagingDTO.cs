@@ -8,6 +8,7 @@ namespace DataModels.DTOs
 {
     public class PagingDTO
     {
+        public string? search { get; set; }
         public int Page { get; set; }
         public int RecordNo { get; set; }
     }
